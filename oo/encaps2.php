@@ -16,7 +16,18 @@ class Pessoa
     }
 }
 
-$nPessoa = new Pessoa();
+class Programador extends Pessoa
+{
+    public function verDados()
+    {
+        echo "Vem da classe: ".get_class($this)."<br>";
+        echo $this->nome."<br>";
+        echo $this->idade."<br>";
+        echo $this->senha."<br>";//Senha não aparece pq é private
+    }
+}
+
+$nPessoa = new Programador();
 echo $nPessoa->nome."<br>";
 //echo $nPessoa->idade."<br>"; //Não funcionaria
 //echo $nPessoa->senha."<br>"; //Não funcionaria
