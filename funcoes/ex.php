@@ -161,3 +161,16 @@ echo exibe($hierarquia);
 echo "<br>";
 echo "<br>";
 echo "<br>";
+
+//Função anonima
+function teste($callback)
+{
+    //Processo Lento
+    $callback();
+}
+
+teste(function()
+{
+    echo "Terminou!";
+});
+
