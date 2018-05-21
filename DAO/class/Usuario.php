@@ -86,6 +86,7 @@ class Usuario
         }
     }
 
+    //Override do tostring volta um json
     public function __toString()
     {
         return json_encode(array(
@@ -96,6 +97,46 @@ class Usuario
             "usuario_dt_cadastro"=>$this->getUsuarioDtCadastro()->format("d/m/Y H:i:s")
         ));
     }
+
+    //Como não usa a palavra this da pra ser estatico
+    public static function getList()
+    {
+        $sql = new Sql();
+        return $sql->select("select * from tb_usuario order by usuario_nome");       
+    }
+
+    public static function buscarPorEmail($email)
+    {
+        $sql = new Sql();
+        return $sql->select("select * from tb_usuario where upper(usuario_email) like :BUSCA order by usuario_nome", 
+        array(
+            ":BUSCA"=>"%".strtoupper($email)."%"));
+
+    }
+
+
+    public function login($email, $pass)
+    {
+        $sql = new Sql();
+        $valores = $sql->select("select * from tb_usuario where upper(usuario_email) = :EMAIL and usuario_senha = :SENHA", array(
+            ":EMAIL"=>strtoupper($email),
+            ":SENHA"=>$pass
+        ));
+
+        if(count($valores) > 0)
+        {
+            $linha = $valores[0];
+            $this->setUsuarioId($linha["usuario_id"]);
+            $this->setUsuarioNome($linha["usuario_nome"]);
+            $this->setUsuarioEmail($linha["usuario_email"]);
+            $this->setUsuarioDtCadastro(new DateTime($linha["usuario_dt_cadastro"]));
+        }
+        else{
+            throw new Exception("Login e/ou Senha inválidos!");
+        }
+    }
+
+
 
     #endregion
 }
