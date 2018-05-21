@@ -2,7 +2,9 @@
 
 function __autoload($nomeClasse)
 {
-    $fileName = $nomeClasse.".php";
+    $dirClass = "class";
+    //No MAC precisa desse replace imbecil
+    $fileName =  str_replace("\\", "/", $dirClass . DIRECTORY_SEPARATOR . $nomeClasse . ".php");
     
     if(file_exists($fileName))
         require_once($fileName);
