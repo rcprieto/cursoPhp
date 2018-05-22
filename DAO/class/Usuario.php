@@ -8,6 +8,7 @@ class Usuario
     private $usuarioSenha;
     private $usuarioEmail;
     private $usuarioDtCadastro;
+    private $mensagemErro;
 
     #region --getter and setters
 
@@ -65,6 +66,18 @@ class Usuario
         $this->usuarioDtCadastro = $usuarioDtCadastro;
 
     }
+
+    public function getMensagemErro()
+    {
+        return $this->mensagemErro;
+    }
+
+
+    public function setMensagemErro($mensagemErro)
+    {
+        $this->mensagemErro = $mensagemErro;
+        
+    }
     #endregion
 
     #region Métodos
@@ -77,12 +90,7 @@ class Usuario
 
         if(count($valores) > 0)
         {
-            $linha = $valores[0];
-            $this->setUsuarioId($linha["usuario_id"]);
-            $this->setUsuarioNome($linha["usuario_nome"]);
-            $this->setUsuarioEmail($linha["usuario_email"]);
-            $this->setUsuarioSenha($linha["usuario_senha"]);
-            $this->setUsuarioDtCadastro(new DateTime($linha["usuario_dt_cadastro"]));
+            $this->setData($valores[0]);
         }
     }
 
@@ -96,6 +104,13 @@ class Usuario
             "usuario_email"=>$this->getUsuarioEmail(),
             "usuario_dt_cadastro"=>$this->getUsuarioDtCadastro()->format("d/m/Y H:i:s")
         ));
+    }
+
+    public function __construct($nome = "", $email = "", $senha = "")
+    {
+        $this->setUsuarioNome($nome);
+        $this->setUsuarioEmail($email);
+        $this->setUsuarioSenha($senha);
     }
 
     //Como não usa a palavra this da pra ser estatico
@@ -125,20 +140,122 @@ class Usuario
 
         if(count($valores) > 0)
         {
-            $linha = $valores[0];
-            $this->setUsuarioId($linha["usuario_id"]);
-            $this->setUsuarioNome($linha["usuario_nome"]);
-            $this->setUsuarioEmail($linha["usuario_email"]);
-            $this->setUsuarioDtCadastro(new DateTime($linha["usuario_dt_cadastro"]));
+            setData($valores[0]);
         }
         else{
             throw new Exception("Login e/ou Senha inválidos!");
         }
     }
 
+    public function setData($data)
+    {
+        $this->setUsuarioId($data["usuario_id"]);
+        $this->setUsuarioNome($data["usuario_nome"]);
+        $this->setUsuarioEmail($data["usuario_email"]);
+        $this->setUsuarioDtCadastro(new DateTime($data["usuario_dt_cadastro"]));
+    }
+
+
+    public function insert():bool
+    {
+        $sql = new Sql();
+
+        //VIA PROCEDURE
+        // $valores = $sql->select("CALL sp_usuario_insert( :NOME,
+        // :SENHA,
+        // :EMAIL)",
+        // array(
+        //     ":NOME"=>$this->getUsuarioNome(),
+        //     ":SENHA"=>$this->getUsuarioSenha(),
+        //     ":EMAIL"=>$this->getUsuarioEmail()
+        // ));
+
+         // if(count($valores)>0)
+        // {
+        //     $this->setData($valores[0]);
+        // }
+
+
+        //VIA QUERY 
+        $retorno = $sql->queryInsert("insert into tb_usuario
+        (
+        usuario_nome,
+        usuario_senha,
+        usuario_email)
+        VALUES(
+        :NOME,
+        :SENHA,
+        :EMAIL)",
+        array(
+               ":NOME"=>$this->getUsuarioNome(),
+              ":SENHA"=>$this->getUsuarioSenha(),
+                ":EMAIL"=>$this->getUsuarioEmail()
+        ));
+
+        if(is_numeric($retorno))
+        {
+            $this->setMensagemErro(null);
+            $this->setUsuarioId($retorno);
+            return true;
+        }
+        else{
+            $this->setMensagemErro($retorno);
+            return false;
+        }
+
+    }
+
+    public function update($id, $nome, $senha):bool
+    {
+
+        $sql = new Sql();
+        $retorno = $sql->queryUpdate("update tb_usuario set 
+        usuario_nome = :NOME, 
+          usuario_senha = :SENHA 
+          where usuario_id = :ID",  array(
+            ":NOME"=>$nome,
+            ":SENHA"=>$senha,
+            ":ID"=>$id
+        ));
+        
+        //SE FOR ARRAY É PORQUE TEM MENSAGEM DE ERRO
+        if(!is_array($retorno))
+        {
+            $this->setMensagemErro(null);
+            return true;
+        }
+        else{
+            $this->setMensagemErro($retorno);
+            return false;
+        }
+       
+    }
+
+
+    public function delete():bool
+    {
+        $sql = new Sql();
+        $retorno = $sql->queryUpdate("delete from tb_usuario 
+          where usuario_id = :ID",  array(
+            ":ID"=>$this->getUsuarioId()
+        ));
+        
+        //SE FOR ARRAY É PORQUE TEM MENSAGEM DE ERRO
+        if(!is_array($retorno))
+        {
+            $this->setMensagemErro(null);
+            return true;
+        }
+        else{
+            $this->setMensagemErro($retorno);
+            return false;
+        }
+    }
 
 
     #endregion
+
+   
 }
 
 ?>

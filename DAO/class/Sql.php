@@ -37,6 +37,34 @@ class Sql extends PDO{
 
     }
 
+    public function queryInsert($rawQuery, $params = array())
+    {
+        $sql = $this->conn->prepare($rawQuery);
+        $this->setParams($sql, $params);
+        
+        if($sql->execute())
+            return $this->conn->lastInsertId();
+        else
+        {
+            return $sql->errorInfo();
+        }
+    }
+
+    public function queryUpdate($rawQuery, $params = array())
+    {
+        $sql = $this->conn->prepare($rawQuery);
+        $this->setParams($sql, $params);
+        
+        if($sql->execute())
+        {
+            return true;
+        }
+        else
+        {
+            return $sql->errorInfo();
+        }
+    }
+
 
     //Metodo para rodar Selects, retorna um array
     public function select($rawQuery, $params = array()):?array
