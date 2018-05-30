@@ -1,5 +1,5 @@
 <?php
-
+phpinfo();
 header("Content-Type: image/jpeg");
 $file = "teste.jpg";
 
