@@ -1,0 +1,2 @@
+Usar no terminal composer init para criar o composer.json init
+Usar composer update (ou install se for a primeira vez, mas pode ser sempre update) para pegar tudo que está dentro de required no composer.json

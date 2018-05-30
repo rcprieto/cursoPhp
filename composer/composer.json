@@ -1,0 +1,16 @@
+{
+    "name": "gosoftwares/composer",
+    "description": "Curso PHP Composer",
+    "type": "project",
+    "authors": [
+        {
+            "name": "Rodrigo Prieto",
+            "email": "rodrigo.prieto@gosoftwares.com.br"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {
+            "monolog/monolog":"1.0.*"
+
+    }
+}
