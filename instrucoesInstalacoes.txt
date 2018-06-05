@@ -1,1 +1,2 @@
 O Composer instala inicialmente na pasta do projeto, para ficar global precisa mover para a pasta /usr/local/bin/composer
+Restart apache sudo /usr/sbin/apachectl restart

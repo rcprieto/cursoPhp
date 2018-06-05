@@ -1,0 +1,15 @@
+{
+    "name": "gosoftwares/slim",
+    "description": "criando slim framework",
+    "type": "project",
+    "authors": [
+        {
+            "name": "Rodrigo Prieto",
+            "email": "rodrigo.prieto@gosoftwares.com.br"
+        }
+    ],
+    "require": {
+
+        "slim/slim":"2.0"
+    }
+}
